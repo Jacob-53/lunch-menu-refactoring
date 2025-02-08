@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-from lunch_menu.db import get_connection, insert_menu, select_table, menu_plot, today_agents, chek_agents
+from lunch_menu_refactoring.db import get_connection, insert_menu, select_table, menu_plot, today_agents, chek_agents
 from datetime import datetime
 
 st.set_page_config(page_title="점심 Check!! 뭐 먹었나요?", page_icon="🍱")

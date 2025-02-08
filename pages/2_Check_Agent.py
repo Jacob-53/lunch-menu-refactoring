@@ -1,11 +1,11 @@
 import streamlit as st
-from lunch_menu.db import get_connection, insert_menu, chek_agents, today_agents
+from  lunch_menu_refactoring.db import get_connection, insert_menu, chek_agents, today_agents
 import time
 from datetime import datetime
 
 
-st.set_page_config(page_title="입력 안한 요원 찾기", page_icon="🕵")
-
+st.set_page_config(page_title="입력 안한 요원 찾기", page_icon = "🔥")
+st.page_link("Main.py", label="Back to Main", icon="🏠")
 st.title("입력 안한 요원 찾기")
 st.subheader("**조회 할 날짜를 선택하세요**") 
 st.sidebar.header("입력 안한 요원 찾기")
@@ -47,14 +47,28 @@ st.markdown(
 tdd = datetime.today().strftime('%Y-%m-%d')
 return_text = today_agents(tdd)
 display_area = st.empty()
-colors = ["red", "orange", "yellow", "green", "blue", "purple"]
+colors = ["red", "orange", "yellow"]
 
 
 while True:
     for color in colors:
         display_area.markdown(
-                f'<h1 style="color:{color}; text-align:center;">{return_text}</h1>',
-                unsafe_allow_html=True
+        f"""
+            <div style="
+                padding: 15px;
+                border: 3px solid;
+                background-color: black;
+                color: {color};
+                text-align: center;
+                border-radius: 10px;
+                font-size: 30px;
+                font-weight: bold;
+                box-shadow: 3px 3px 10px;
+            ">
+                {return_text}
+            </div>
+            """,
+            unsafe_allow_html=True
         )
-        #st.subheader(sub_text)
-        time.sleep(0.5)
+                
+        time.sleep(0.8)

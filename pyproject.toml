@@ -1,11 +1,11 @@
 [project]
 name = "lunch-menu-refactoring"
-version = "0.1.1"
+version = "0.1.2"
 description = "It's about menu-eda"
 authors = [
     {name = "jacob-53", email = "jacob8753@gmail.com"},
 ]
-dependencies = ["pandas>=2.2.3", "streamlit>=1.42.0", "matplotlib>=3.10.0", "psycopg>=3.2.4", "python-dotenv>=1.0.1"]
+dependencies = ["pandas>=2.2.3", "streamlit>=1.42.0", "matplotlib>=3.10.0", "python-dotenv>=1.0.1", "psycopg[binary,pool]>=3.2.4"]
 requires-python = ">=3.10"
 readme = "README.md"
 license = {text = "BSD"}

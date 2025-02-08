@@ -180,3 +180,37 @@ def today_agents(tdd):
                     return "모든 요원 입력 완료!"
     except Exception:
         return "조회 중 오류가 발생했습니다"
+
+#요일별 TOP3 메뉴
+def date_menu(dat:str):
+    num_convert = {
+        '일요일': 0,
+        '월요일': 1,
+        '화요일': 2,
+        '수요일': 3,
+        '목요일': 4,
+        '금요일': 5,
+        '토요일': 6
+    }
+    date_number = num_convert.get(dat)
+    query = f"""
+        select menu_name,count(menu_name),dt,extract(dow FROM dt::date)
+        FROM lunch_menu 
+        where  extract(dow FROM dt::date) = {date_number}
+        group by menu_name,dt,extract(dow FROM dt::date)
+        order by count(menu_name) desc
+        limit 3;"""
+
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                rows = cursor.fetchall()
+                if not rows:
+                    return " 해당 일의 데이터가 없습니다"
+                fdf=pd.DataFrame(rows,columns=['menu_name','count','dt','dow'])
+                adf=fdf[['menu_name', 'count']]
+                #sdf=adf.loc[:,['menu_name','dt']]
+                return adf
+    except Exception:
+        return "조회 중 오류가 발생했습니다"

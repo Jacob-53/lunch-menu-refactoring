@@ -1,6 +1,6 @@
 [project]
 name = "lunch-menu-refactoring"
-version = "0.1.2"
+version = "0.2.0"
 description = "It's about menu-eda"
 authors = [
     {name = "jacob-53", email = "jacob8753@gmail.com"},

@@ -2,7 +2,7 @@
 # It is not intended for manual editing.
 
 [metadata]
-groups = ["default"]
+groups = ["default", "pytest"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
 content_hash = "sha256:1331e9aef7675b86b4fa06dc34c031958e5e0690a05a766f7e7c0bbdd55cba7d"

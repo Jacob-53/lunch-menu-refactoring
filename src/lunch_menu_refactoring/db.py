@@ -52,10 +52,27 @@ def select_table():
             rows = cursor.fetchall()
 
 
-            selected_df = pd.DataFrame(rows,columns=['menu','ename','dt'])
+            selected_df = pd.DataFrame(rows,columns=['menu','ename','dt'],index=range(1,len(rows)+1))
         
             return selected_df
-
+# 입력 횟수 출력
+def count_member():
+    query="""SELECT
+        lunch_menu.menu_name AS menu,
+        member.name AS ename,
+        lunch_menu.dt, member.id
+        FROM member
+        INNER JOIN lunch_menu ON member.id = lunch_menu.member_id
+        ORDER BY lunch_menu.dt DESC"""
+    with get_connection() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            df = pd.DataFrame(rows,columns=['menu','ename','dt','id'],index=range(1,len(rows)+1))
+            fdf = df.groupby(['ename','id'])['menu'].count().reset_index().set_index('id')
+            sdf = fdf.sort_values(by='menu', ascending=False)
+            adf = sdf.style.set_properties(color="green", align="left")
+            return adf
 # 메뉴 그래프
 def menu_plot():
     try:
@@ -208,9 +225,31 @@ def date_menu(dat:str):
                 rows = cursor.fetchall()
                 if not rows:
                     return " 해당 일의 데이터가 없습니다"
-                fdf=pd.DataFrame(rows,columns=['menu_name','count','dt','dow'])
-                adf=fdf[['menu_name', 'count']]
+                df=pd.DataFrame(rows,columns=['menu_name','count','dt','dow'],index=range(1,len(rows)+1))
+                adf=df[['menu_name', 'count']]
                 #sdf=adf.loc[:,['menu_name','dt']]
                 return adf
+    except Exception:
+        return "조회 중 오류가 발생했습니다"
+
+#메뉴 인기 순위
+def top_pick_menu():
+    query = """
+        select menu_name,count(menu_name)
+from lunch_menu
+group by lunch_menu.menu_name 
+order by count(menu_name) desc
+limit 10"""
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                rows = cursor.fetchall()
+                if not rows:
+                    return "입력된 데이터가 없어 출력 할 수 없습니다"
+                df=pd.DataFrame(rows,columns=['menu_name','count'],index=range(1,len(rows)+1))
+                fdf = df.style.set_properties(color="red", align="left")
+                return fdf 
+
     except Exception:
         return "조회 중 오류가 발생했습니다"

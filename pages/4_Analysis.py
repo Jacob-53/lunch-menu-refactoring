@@ -1,7 +1,8 @@
 import streamlit as st
-from  lunch_menu_refactoring.db import get_connection, insert_menu, select_table, menu_plot, date_menu
+from  lunch_menu_refactoring.db import get_connection, insert_menu, select_table, menu_plot, date_menu, top_pick_menu
 
-st.set_page_config(page_title="Analysis", page_icon = "🎢 ",layout="wide")
+
+st.set_page_config(page_title="Analysis", page_icon = "🔬",layout="wide")
 st.page_link("Main.py", label="Back to Main", icon="🏠")
 
 st.subheader("요일별 인기메뉴 Top 3")
@@ -21,3 +22,6 @@ if isPressed:
         st.error("해당 일의 데이터가 없습니다")
     else:
         st.table(top_menu_date)
+st.subheader("점심 Top 10 Menu")
+
+st.markdown(top_pick_menu().to_html(),unsafe_allow_html=True)

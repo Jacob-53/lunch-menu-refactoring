@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 
 
-st.set_page_config(page_title="입력 안한 요원 찾기", page_icon = "🔥")
+st.set_page_config(page_title="입력 안한 요원 찾기", page_icon = "🕵️‍♂️")
 st.page_link("Main.py", label="Back to Main", icon="🏠")
 st.title("입력 안한 요원 찾기")
 st.subheader("**조회 할 날짜를 선택하세요**") 

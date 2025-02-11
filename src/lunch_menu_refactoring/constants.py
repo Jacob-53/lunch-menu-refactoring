@@ -1,0 +1,1 @@
+API_AGE = 'https://acalc.jacob53.shop/api/py/ageCalculator'

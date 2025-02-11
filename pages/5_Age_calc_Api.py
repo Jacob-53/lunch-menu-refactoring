@@ -1,14 +1,14 @@
 import streamlit as st
 import requests
 import lunch_menu_refactoring.constants as const
-
+import datetime
 
 st.set_page_config(page_title="Age Calculator", page_icon="🧮")
 st.page_link("Main.py", label="Back to Main", icon="🏠")
 
 st.sidebar.header("Age Calculator")
 
-bday = st.date_input("생년월일을 입력하세요")
+bday = st.date_input("생년월일을 입력하세요",min_value=datetime.date(1950,1,1))
 bdayPress = st.button("조회하기")
 
 if bdayPress:

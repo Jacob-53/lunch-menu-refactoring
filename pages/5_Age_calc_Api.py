@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
-import json
+import lunch_menu_refactoring.constants as const
+
 
 st.set_page_config(page_title="Age Calculator", page_icon="🧮")
 st.page_link("Main.py", label="Back to Main", icon="🏠")
@@ -13,6 +14,13 @@ bdayPress = st.button("조회하기")
 if bdayPress:
     headers = {
         'accept': 'application/json',}
-    response = requests.get(f'https://acalc.jacob53.shop/api/py/ageCalculator/{bday}', headers=headers)
-    data = response.json()
-    st.json(data)
+    
+    response = requests.get(f'{const.API_AGE}/{bday}', headers=headers)
+    if response.status_code == 200:
+        data = response.json()
+        st.success(data['age'])
+    else:
+        st.error("관리자에게 문의 하세요")
+    #response.status_code (응답코드 받는 명령어 200은 성공)
+    #st.json(data)
+   

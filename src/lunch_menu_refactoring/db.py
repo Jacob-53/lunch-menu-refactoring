@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 import time
 from datetime import datetime
-
+import requests
 
 
 load_dotenv()
@@ -253,3 +253,75 @@ limit 10"""
 
     except Exception:
         return "조회 중 오류가 발생했습니다"
+
+
+#Api Sync
+def api_sync():
+    ep = "https://raw.githubusercontent.com/ppabam/nextjs-fastapi-starter/refs/heads/main/endpoints.json"
+    res = requests.get(ep)
+    datamain = res.json()
+    endpoint = datamain['endpoints']
+    del endpoint[4:6]
+    syncmem = [(i['name'],i['url']) for i in endpoint]
+    sync_list=[]
+    for i in range(len(syncmem)):
+        resmem = requests.get(syncmem[i][1])
+        data = resmem.json()
+        df1 = pd.DataFrame(data)
+        df1 = df1.astype(str).apply(lambda col: col.map(str.lower))#lambda 사용 소문자통일
+        resme = requests.get("https://jacob0503.vercel.app/api/py/select_table")
+        datame = resme.json()
+        dfme = pd.DataFrame(datame)
+        dfme = dfme.astype(str).apply(lambda col: col.map(str.lower))
+        merge_df = pd.merge(df1, dfme, on=["dt","name"], how="left", indicator=True)
+        df_diff_1 = merge_df[merge_df['_merge'] == 'left_only'].drop(['_merge','menu_name_y'] , axis=1)
+        df_sync = df_diff_1.sort_values(by=['name']).reset_index(drop=True)
+        if "menu_name" not in df_sync.columns and "menu_name_x" in df_sync.columns:#컬럼명 변경
+            df_sync.rename(columns={"menu_name_x":"menu_name"},inplace=True)
+        if not df_sync.empty:
+            for row in df_sync.itertuples(index=False):
+                sync_list.append(tuple(row))
+
+    members = {"seo": 5, "tom": 1, "cho": 2, "hyun": 3, "nuni": 10, "jerry": 4, "jacob": 7, "jiwon": 6, "lucas": 9, "heejin": 8}
+    sync_list=[(i[0],members.get(i[1], i[1]),i[2]) for i in sync_list]   
+    distinct_list=list(set(sync_list))
+    r_cnt = len(sync_list)-len(distinct_list)
+    try:                                                   
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                success_cnt = 0
+                fail_cnt = 0
+                cursor.executemany("INSERT INTO lunch_menu (menu_name,member_id,dt) VALUES (%s,%s,%s) ON CONFLICT (member_id,dt)  DO NOTHING",distinct_list)
+        
+                success_cnt = cursor.rowcount
+                fail_cnt = len(distinct_list) - success_cnt
+
+                if success_cnt == len(distinct_list):
+                    return st.success(f""" 작업완료 - 새로운 원천 {len(syncmem)} 곳에서 총 {success_cnt} 건 추가 하였습니다.
+                                      총{len(sync_list)}건 중 중복 값값 {r_cnt} 건 """)
+
+                else:
+                    return st.error(f"총 {len(distinct_list)} 건 중 {fail_cnt} 건 실패")
+    except Exception as e:
+        print(f"Exception: {e}")
+        return st.warning(f"오류 발생 ; {e}")
+    
+#Api Status
+def check_api():
+    ep = "https://raw.githubusercontent.com/ppabam/nextjs-fastapi-starter/refs/heads/main/endpoints.json"
+    res = requests.get(ep)
+    datamain = res.json()
+    endpoint = datamain['endpoints']
+    syncmem = [(i['name'],i['url']) for i in endpoint]
+    status_list=[]
+    for name,url in syncmem:
+        try:
+            response = requests.get(url)
+            status = response.status_code
+            if status == 200:
+                status_list.append(f"🟢 {name}:{status}")
+            else:
+                status_list.append(f"🔴 {name}:{status}")
+        except Exception as e:
+            status_list.append(f"Error {e}")
+    return status_list

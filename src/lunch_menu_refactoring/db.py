@@ -298,7 +298,7 @@ def api_sync():
 
                 if success_cnt == len(distinct_list):
                     return st.success(f""" 작업완료 - 새로운 원천 {len(syncmem)} 곳에서 총 {success_cnt} 건 추가 하였습니다.
-                                      총{len(sync_list)}건 중 중복 값값 {r_cnt} 건 """)
+                                      총{len(sync_list)}건 중 중복 값 {r_cnt} 건 """)
 
                 else:
                     return st.error(f"총 {len(distinct_list)} 건 중 {fail_cnt} 건 실패")

@@ -7,11 +7,13 @@ st.title("🔄 API Sync")
 st.sidebar.header("🔄 API Sync")
 syncPress = st.button("Sync")
 if syncPress:
-    api_sync()
+    with st.spinner("⌛ 조회 중 입니다",show_time=True):
+        api_sync()
     
 st.subheader("🚥 Api Status")
 apistatusPres= st.button("Api Status")
 if apistatusPres:
-    status_results = check_api()
-    for status in status_results:
-        st.write(status)
+    with st.spinner("⌛ 조회 중 입니다",show_time=True):
+        status_results = check_api()
+        for status in status_results:
+            st.write(status)

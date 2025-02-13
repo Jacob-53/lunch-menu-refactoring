@@ -298,9 +298,11 @@ def api_sync():
                 success_cnt = cursor.rowcount
                 fail_cnt = len(distinct_list) - success_cnt
 
-                if len(distinct_list)== 0 :
+                if len(distinct_list) == 0 :
+                    st.balloons()
                     return st.success(f"이미 최신화 되어 있습니다")
                 elif success_cnt == len(distinct_list):
+                    st.balloons()
                     return st.success(f""" 작업완료 - 새로운 원천 {len(syncmem)} 곳에서 총 {success_cnt} 건 추가 하였습니다.
                                       총{len(sync_list)}건 중 중복 값 {r_cnt} 건 """) 
                 else:
@@ -327,4 +329,5 @@ def check_api():
                 status_list.append(f"🔴 {name}:{status}")
         except Exception as e:
             status_list.append(f"Error {e}")
+    st.balloons()       
     return status_list

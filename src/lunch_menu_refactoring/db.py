@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import time
 from datetime import datetime
 import requests
-
+import lunch_menu_refactoring.constants as const
 
 load_dotenv()
 
@@ -257,7 +257,7 @@ limit 10"""
 
 #Api Sync
 def api_sync():
-    ep = "https://raw.githubusercontent.com/ppabam/nextjs-fastapi-starter/refs/heads/main/endpoints.json"
+    ep = f"{const.ppabam_url}"
     res = requests.get(ep)
     datamain = res.json()
     endpoint = datamain['endpoints']
@@ -269,7 +269,7 @@ def api_sync():
         data = resmem.json()
         df1 = pd.DataFrame(data)
         df1 = df1.astype(str).apply(lambda col: col.map(str.lower))#lambda 사용 소문자통일
-        resme = requests.get("https://jacob0503.vercel.app/api/py/select_table")
+        resme = requests.get(f"{const.jacob_req_url}")
         datame = resme.json()
         dfme = pd.DataFrame(datame)
         dfme = dfme.astype(str).apply(lambda col: col.map(str.lower))
@@ -283,7 +283,9 @@ def api_sync():
                 sync_list.append(tuple(row))
 
     members = {"seo": 5, "tom": 1, "cho": 2, "hyun": 3, "nuni": 10, "jerry": 4, "jacob": 7, "jiwon": 6, "lucas": 9, "heejin": 8}
-    sync_list=[(i[0],members.get(i[1], i[1]),i[2]) for i in sync_list]   
+    sync_list=[(i[0],members.get(i[1], i[1]),i[2]) for i in sync_list]
+    #for i in sync_list:
+    #   sync_list.append((i[0],members[i[1]],i[2])) 같은 결과
     distinct_list=list(set(sync_list))
     r_cnt = len(sync_list)-len(distinct_list)
     try:                                                   
@@ -309,7 +311,7 @@ def api_sync():
     
 #Api Status
 def check_api():
-    ep = "https://raw.githubusercontent.com/ppabam/nextjs-fastapi-starter/refs/heads/main/endpoints.json"
+    ep = f"{const.ppabam_url}"
     res = requests.get(ep)
     datamain = res.json()
     endpoint = datamain['endpoints']

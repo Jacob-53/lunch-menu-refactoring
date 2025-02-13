@@ -268,11 +268,11 @@ def api_sync():
         resmem = requests.get(syncmem[i][1])
         data = resmem.json()
         df1 = pd.DataFrame(data)
-        df1 = df1.astype(str).apply(lambda col: col.map(str.lower))#lambda 사용 소문자통일
+        df1 = df1.astype(str).apply(lambda col: col.map(str.lower))#df 내용 모두 String으로 변환 후 lambda 사용 모든 serise 내용용 소문자통일
         resme = requests.get(f"{const.jacob_req_url}")
         datame = resme.json()
         dfme = pd.DataFrame(datame)
-        dfme = dfme.astype(str).apply(lambda col: col.map(str.lower))
+        dfme = dfme.astype(str).apply(lambda col: col.map(str.lower))#df 내용 모두 String으로 변환 후 lambda 사용 모든 serise 내용용 소문자통일; execute 시 이름이 아니라 member_id 로 들어 가야 함 치환과정에서 필요
         merge_df = pd.merge(df1, dfme, on=["dt","name"], how="left", indicator=True)
         df_diff_1 = merge_df[merge_df['_merge'] == 'left_only'].drop(['_merge','menu_name_y'] , axis=1)
         df_sync = df_diff_1.sort_values(by=['name']).reset_index(drop=True)
